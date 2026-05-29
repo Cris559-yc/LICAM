@@ -5,87 +5,60 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Migración: Modificación de la tabla 'users'
+ * Migración base de Laravel: Creación de tablas 'users', 'password_reset_tokens' y 'sessions'.
  *
- * Agrega los campos adicionales necesarios para el sistema LICAM:
- * - Relacion con la tabla 'roles' (ciudadano o administrador)
- * - Datos personales del ciudadano (apellido, DUI, telefono, direccion)
- * - Estado del usuario (activo/inactivo)
- *
- * Se modifica la tabla existente 'users' que Laravel crea por defecto,
- * aprovechando su sistema de autenticacion integrado.
+ * Esta migracion crea las tablas necesarias para el sistema de autenticacion
+ * que Laravel trae por defecto. La tabla 'users' sera modificada posteriormente
+ * mediante otra migracion para agregar los campos especificos del sistema LICAM.
  *
  */
 return new class extends Migration
 {
     /**
-     * Ejecuta la migración: agrega columnas nuevas a la tabla 'users'.
+     * Ejecuta la migración: crea las tablas de autenticacion.
      *
      * @return void
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Llave foranea hacia la tabla 'roles'.
-            // Se coloca despues de 'id' para mejor organizacion visual.
-            $table->foreignId('rol_id')
-                  ->after('id')
-                  ->constrained('roles')
-                  ->onDelete('restrict')
-                  ->comment('Rol asignado al usuario: ciudadano o administrador');
+        // Tabla principal de usuarios del sistema
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
 
-            // Apellido del usuario (Laravel ya trae 'name' para el nombre)
-            $table->string('apellido', 100)
-                  ->after('name')
-                  ->comment('Apellido(s) del usuario');
+        // Tabla para gestionar los tokens de recuperacion de contraseña
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
 
-            // Documento Unico de Identidad (formato salvadoreño: 00000000-0)
-            $table->string('dui', 10)
-                  ->unique()
-                  ->nullable()
-                  ->after('apellido')
-                  ->comment('Documento Unico de Identidad en formato 00000000-0');
-
-            // Numero de telefono del usuario
-            $table->string('telefono', 15)
-                  ->nullable()
-                  ->after('dui')
-                  ->comment('Numero de telefono de contacto');
-
-            // Direccion de residencia del usuario
-            $table->string('direccion', 255)
-                  ->nullable()
-                  ->after('telefono')
-                  ->comment('Direccion de residencia del usuario');
-
-            // Estado del usuario: TRUE = activo, FALSE = deshabilitado
-            $table->boolean('activo')
-                  ->default(true)
-                  ->after('direccion')
-                  ->comment('Indica si el usuario puede iniciar sesion');
+        // Tabla para gestionar las sesiones de usuarios
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
         });
     }
 
     /**
-     * Revierte la migración: elimina las columnas agregadas a 'users'.
+     * Revierte la migración: elimina las tablas creadas.
      *
      * @return void
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Primero eliminar la restriccion de llave foranea
-            $table->dropForeign(['rol_id']);
-
-            // Luego eliminar las columnas en orden inverso
-            $table->dropColumn([
-                'rol_id',
-                'apellido',
-                'dui',
-                'telefono',
-                'direccion',
-                'activo'
-            ]);
-        });
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
     }
 };
