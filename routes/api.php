@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoriaController;
+use App\Http\Controllers\Api\ReporteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,9 +21,6 @@ use Illuminate\Support\Facades\Route;
 // RUTA DE PRUEBA
 // ============================================================
 
-/**
- * Ruta para confirmar que la API esta operativa.
- */
 Route::get('/test', function () {
     return response()->json([
         'success' => true,
@@ -35,10 +33,6 @@ Route::get('/test', function () {
 // RUTAS PUBLICAS - NO REQUIEREN AUTENTICACION
 // ============================================================
 
-/**
- * Rutas de autenticacion publicas.
- * Cualquier persona puede registrarse o iniciar sesion.
- */
 Route::post('/registro', [AuthController::class, 'registro']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -46,16 +40,15 @@ Route::post('/login', [AuthController::class, 'login']);
 // RUTAS PROTEGIDAS - REQUIEREN AUTENTICACION CON SANCTUM
 // ============================================================
 
-/**
- * Grupo de rutas que requieren un token valido para acceder.
- * El middleware 'auth:sanctum' verifica el token en cada peticion.
- */
 Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas relacionadas a la sesion del usuario
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/usuario', [AuthController::class, 'usuario']);
 
-    // CRUD de Categorias (solo usuarios autenticados pueden gestionarlas)
+    // CRUD de Categorias
     Route::apiResource('categorias', CategoriaController::class);
+
+    // CRUD de Reportes (corazon del sistema)
+    Route::apiResource('reportes', ReporteController::class);
 });
