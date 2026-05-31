@@ -1,24 +1,35 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { bunny } from 'laravel-vite-plugin/fonts';
-import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';
 
+/**
+ * Configuracion de Vite para el proyecto LICAM.
+ *
+ * Vite es el build tool que compila los archivos Vue, JS y CSS.
+ * Configura la integracion con Laravel y habilita el soporte para Vue 3.
+ *
+ */
 export default defineConfig({
     plugins: [
+        // Plugin oficial de Laravel para integracion con Vite
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
         }),
-        tailwindcss(),
+        // Plugin para soportar componentes Vue (.vue)
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
+        }),
     ],
-    server: {
-        watch: {
-            ignored: ['**/storage/framework/views/**'],
+    resolve: {
+        alias: {
+            // Alias '@' para acceder facilmente a la carpeta resources/js
+            '@': '/resources/js',
         },
     },
 });
