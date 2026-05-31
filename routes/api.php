@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoriaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,34 +13,15 @@ use Illuminate\Support\Facades\Route;
 | Aqui se registran todas las rutas API del sistema. Todas estas rutas
 | se cargan con el prefijo "/api" automaticamente.
 |
-| Ejemplo: Route::get('/categorias') = http://licam.test/api/categorias
-|
 | @project LICAM - Linea Ciudadana de Atencion Municipal
 */
 
 // ============================================================
-// RUTAS PUBLICAS (no requieren autenticacion por ahora)
+// RUTA DE PRUEBA
 // ============================================================
 
 /**
- * Rutas para la gestion de Categorias.
- *
- * Route::apiResource genera automaticamente las 5 rutas REST:
- * - GET    /categorias          -> index()
- * - POST   /categorias          -> store()
- * - GET    /categorias/{id}     -> show()
- * - PUT    /categorias/{id}     -> update()
- * - DELETE /categorias/{id}     -> destroy()
- */
-Route::apiResource('categorias', CategoriaController::class);
-
-// ============================================================
-// RUTA DE PRUEBA: verificar que la API funciona
-// ============================================================
-
-/**
- * Ruta de prueba para confirmar que la API esta operativa.
- * Acceder a: http://licam.test/api/test
+ * Ruta para confirmar que la API esta operativa.
  */
 Route::get('/test', function () {
     return response()->json([
@@ -47,4 +29,33 @@ Route::get('/test', function () {
         'message' => 'API de LICAM funcionando correctamente.',
         'fecha'   => now()->toDateTimeString(),
     ]);
+});
+
+// ============================================================
+// RUTAS PUBLICAS - NO REQUIEREN AUTENTICACION
+// ============================================================
+
+/**
+ * Rutas de autenticacion publicas.
+ * Cualquier persona puede registrarse o iniciar sesion.
+ */
+Route::post('/registro', [AuthController::class, 'registro']);
+Route::post('/login', [AuthController::class, 'login']);
+
+// ============================================================
+// RUTAS PROTEGIDAS - REQUIEREN AUTENTICACION CON SANCTUM
+// ============================================================
+
+/**
+ * Grupo de rutas que requieren un token valido para acceder.
+ * El middleware 'auth:sanctum' verifica el token en cada peticion.
+ */
+Route::middleware('auth:sanctum')->group(function () {
+
+    // Rutas relacionadas a la sesion del usuario
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/usuario', [AuthController::class, 'usuario']);
+
+    // CRUD de Categorias (solo usuarios autenticados pueden gestionarlas)
+    Route::apiResource('categorias', CategoriaController::class);
 });
