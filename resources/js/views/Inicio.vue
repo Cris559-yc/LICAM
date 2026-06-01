@@ -16,8 +16,7 @@
 
 <script setup>
 /**
- * Vista temporal de Inicio.
- * Solo para verificar que Vue y Tailwind funcionan correctamente.
+ * Vista temporal de Inicio del sistema LICAM.
  *
  * @project LICAM - Linea Ciudadana de Atencion Municipal
  */

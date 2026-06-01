@@ -8,7 +8,6 @@
  * @project LICAM - Linea Ciudadana de Atencion Municipal
  */
 
-import './bootstrap';
 import '../css/app.css';
 
 import { createApp } from 'vue';
