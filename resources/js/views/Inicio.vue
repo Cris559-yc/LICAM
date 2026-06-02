@@ -29,7 +29,7 @@
                 <!-- Logo y nombre -->
                 <div class="flex items-center gap-3">
                     <img
-                        src="c:\laragon\www\LICAM\public\img\escudo-san-jorge.jpeg"
+                        src="\img\escudo-san-jorge.jpeg"
 
                         alt="Escudo Alcaldia de San Jorge"
                         class="w-14 h-14 object-contain"
@@ -106,7 +106,7 @@
                             <!-- Aro decorativo detras del escudo -->
                             <div class="absolute inset-0 bg-white/10 rounded-full blur-2xl"></div>
                             <img
-                                src="/img/escudo-san-jorge.png"
+                                src="/img/escudo-san-jorge.jpeg"
                                 alt="Escudo Alcaldia Municipal de San Jorge"
                                 class="relative w-72 sm:w-80 lg:w-96 h-auto drop-shadow-2xl"
                             >
@@ -298,7 +298,7 @@
                 <div>
                     <div class="flex items-center gap-3 mb-4">
                         <img
-                            src="/img/escudo-san-jorge.png"
+                            src="/img/escudo-san-jorge.jpeg"
                             alt="Escudo"
                             class="w-12 h-12 object-contain"
                         >
