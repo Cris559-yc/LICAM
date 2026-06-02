@@ -33,8 +33,17 @@ Route::get('/test', function () {
 // RUTAS PUBLICAS - NO REQUIEREN AUTENTICACION
 // ============================================================
 
+/**
+ * Rutas de autenticacion publicas.
+ */
 Route::post('/registro', [AuthController::class, 'registro']);
 Route::post('/login', [AuthController::class, 'login']);
+
+/**
+ * Endpoint publico de categorias (solo lectura).
+ * Se expone para que la pagina de inicio pueda mostrarlas sin autenticacion.
+ */
+Route::get('/categorias', [CategoriaController::class, 'index']);
 
 // ============================================================
 // RUTAS PROTEGIDAS - REQUIEREN AUTENTICACION CON SANCTUM
@@ -46,8 +55,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/usuario', [AuthController::class, 'usuario']);
 
-    // CRUD de Categorias
-    Route::apiResource('categorias', CategoriaController::class);
+    // CRUD de Categorias (crear, modificar, eliminar requieren autenticacion)
+    Route::post('/categorias', [CategoriaController::class, 'store']);
+    Route::get('/categorias/{id}', [CategoriaController::class, 'show']);
+    Route::put('/categorias/{id}', [CategoriaController::class, 'update']);
+    Route::delete('/categorias/{id}', [CategoriaController::class, 'destroy']);
 
     // CRUD de Reportes (corazon del sistema)
     Route::apiResource('reportes', ReporteController::class);

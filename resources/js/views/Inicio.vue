@@ -29,7 +29,7 @@
                 <!-- Logo y nombre -->
                 <div class="flex items-center gap-3">
                     <img
-                        src="public/img/escudo-san-jorge.jpeg"
+                        src="c:\laragon\www\LICAM\public\img\escudo-san-jorge.jpeg"
 
                         alt="Escudo Alcaldia de San Jorge"
                         class="w-14 h-14 object-contain"
