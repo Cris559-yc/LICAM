@@ -29,10 +29,9 @@
                 <!-- Logo y nombre -->
                 <div class="flex items-center gap-3">
                     <img
-                        src="\img\escudo-san-jorge.jpeg"
-
-                        alt="Escudo Alcaldia de San Jorge"
-                        class="w-14 h-14 object-contain"
+                        :src="escudo"
+                        alt="Escudo"
+                        class="w-10 h-10 object-contain rounded-full border-2 border-slate-200"
                     >
                     <div>
                         <h1 class="font-bold text-slate-800 text-lg leading-tight">Alcaldia de San Jorge</h1>
@@ -106,7 +105,7 @@
                             <!-- Aro decorativo detras del escudo -->
                             <div class="absolute inset-0 bg-white/10 rounded-full blur-2xl"></div>
                             <img
-                                src="/img/escudo-san-jorge.jpeg"
+                                :src="escudo"
                                 alt="Escudo Alcaldia Municipal de San Jorge"
                                 class="relative w-72 sm:w-80 lg:w-96 h-auto drop-shadow-2xl"
                             >
@@ -298,7 +297,7 @@
                 <div>
                     <div class="flex items-center gap-3 mb-4">
                         <img
-                            src="/img/escudo-san-jorge.jpeg"
+                            :src="escudo"
                             alt="Escudo"
                             class="w-12 h-12 object-contain"
                         >
@@ -361,6 +360,7 @@ import axios from 'axios';
 const categorias = ref([]);
 const reportes = ref([]);
 const cargandoCategorias = ref(false);
+const escudo = new URL('/img/escudo-san-jorge.jpeg', import.meta.url).href;
 
 /**
  * Estadisticas calculadas a partir de los reportes obtenidos de la API.
