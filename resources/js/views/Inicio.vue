@@ -1,18 +1,14 @@
 <template>
     <!--
-        Vista: Pagina de Inicio (Landing publica)
-        Pagina de bienvenida del sistema LICAM con:
-        - Escudo y datos de la Alcaldia de San Jorge
-        - Llamado a la accion para el ciudadano
-        - Botones de Iniciar Sesion y Registrarse
-        - Listado de categorias de reportes
-        - Estadisticas del sistema
-        - Pasos explicativos del proceso
+        Vista: Pagina de Inicio (Landing publica) - Tema oscuro elegante
+        Pagina de bienvenida del sistema LICAM con diseño en tonos azul-noche.
+        Presenta la identidad de la Alcaldia, llamado a la accion comunitario,
+        categorias de reportes y el proceso de funcionamiento.
     -->
-    <div class="min-h-screen bg-slate-50">
+    <div class="min-h-screen bg-slate-950 text-slate-200">
 
         <!-- TOP BAR GUBERNAMENTAL -->
-        <div class="bg-slate-900 text-white text-xs py-2">
+        <div class="bg-black/40 text-slate-400 text-xs py-2 border-b border-slate-800">
             <div class="max-w-7xl mx-auto px-6 flex justify-between items-center flex-wrap gap-2">
                 <span>Gobierno Municipal de San Jorge · Republica de El Salvador</span>
                 <div class="flex gap-4 flex-wrap">
@@ -23,153 +19,106 @@
         </div>
 
         <!-- NAVBAR -->
-        <header class="bg-white shadow-sm sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-                <!-- Logo y nombre -->
+        <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex items-center">
                 <div class="flex items-center gap-3">
-                    <img
-                        src="/img/escudo-san-jorge.jpeg"
-                        alt="Escudo Alcaldia de San Jorge"
-                        class="w-14 h-14 object-contain"
-                    >
-                    <div>
-                        <h1 class="font-bold text-slate-800 text-lg leading-tight">Alcaldia de San Jorge</h1>
-                        <p class="text-xs text-slate-500">Sistema LICAM · Linea Ciudadana</p>
+                    <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-cyan-400 rounded-xl flex items-center justify-center text-slate-900 font-extrabold text-lg shadow-lg shadow-sky-500/30">
+                        SJ
                     </div>
-                </div>
-
-                <!-- Botones de acceso -->
-                <div class="flex gap-3">
-                    <router-link
-                        to="/login"
-                        class="px-4 sm:px-5 py-2 text-sky-700 font-semibold hover:bg-sky-50 rounded-lg transition"
-                    >
-                        Iniciar Sesion
-                    </router-link>
-                    <router-link
-                        to="/registro"
-                        class="px-4 sm:px-5 py-2 bg-sky-700 text-white font-semibold rounded-lg hover:bg-sky-800 transition shadow-md"
-                    >
-                        Registrarse
-                    </router-link>
+                    <div>
+                        <h1 class="font-bold text-white text-lg leading-tight">Alcaldia de San Jorge</h1>
+                        <p class="text-xs text-slate-400">Sistema LICAM · Linea Ciudadana</p>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <!-- HERO PRINCIPAL CON ESCUDO -->
-        <section class="bg-gradient-to-br from-sky-700 via-sky-800 to-sky-900 text-white py-16 sm:py-20 relative overflow-hidden">
+        <!-- HERO PRINCIPAL -->
+        <section class="relative py-24 sm:py-32 overflow-hidden">
 
-            <!-- Efectos decorativos -->
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute top-10 right-10 w-72 h-72 rounded-full bg-white blur-3xl"></div>
-                <div class="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-amber-400 blur-3xl"></div>
+            <!-- Efectos de luz de fondo -->
+            <div class="absolute inset-0">
+                <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-sky-600/20 blur-3xl"></div>
+                <div class="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-900/20 blur-3xl"></div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-6 relative z-10">
-                <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Patron de puntos sutil -->
+            <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle, #334155 1px, transparent 1px); background-size: 32px 32px;"></div>
 
-                    <!-- Texto del hero -->
-                    <div class="text-center lg:text-left order-2 lg:order-1">
-                        <span class="inline-block px-4 py-1 bg-amber-400 text-slate-900 rounded-full text-sm font-bold mb-6">
-                            PLATAFORMA OFICIAL
-                        </span>
-                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
-                            Construyamos juntos un San Jorge mejor
-                        </h1>
-                        <p class="text-lg sm:text-xl text-sky-100 mb-8 leading-relaxed">
-                            Tu voz es importante. Reporta problemas en tu comunidad, da seguimiento
-                            a su solucion y forma parte del cambio que necesita nuestro municipio.
-                        </p>
+            <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+                <span class="inline-block px-4 py-1.5 bg-sky-500/10 border border-sky-500/30 text-sky-400 rounded-full text-sm font-bold mb-6">
+                    PLATAFORMA OFICIAL
+                </span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight text-white">
+                    Construyamos juntos un
+                    <span class="bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+                        San Jorge mejor
+                    </span>
+                </h1>
+                <p class="text-lg sm:text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
+                    Tu voz es importante. Reporta problemas en tu comunidad, da seguimiento
+                    a su solucion y forma parte del cambio que necesita nuestro municipio.
+                </p>
 
-                        <!-- Botones principales de accion -->
-                        <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-                            <router-link
-                                to="/registro"
-                                class="px-8 py-4 bg-amber-400 text-slate-900 font-bold rounded-xl hover:bg-amber-300 shadow-lg transition flex items-center gap-2"
-                            >
-                                <span>📝</span> Crear mi cuenta
-                            </router-link>
-                            <router-link
-                                to="/login"
-                                class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white/20 transition flex items-center gap-2"
-                            >
-                                <span>🔐</span> Iniciar sesion
-                            </router-link>
-                        </div>
-                    </div>
-
-                    <!-- Escudo de la alcaldia -->
-                    <div class="flex justify-center order-1 lg:order-2">
-                        <div class="relative">
-                            <!-- Aro decorativo detras del escudo -->
-                            <div class="absolute inset-0 bg-white/10 rounded-full blur-2xl"></div>
-                            <img
-                                src="/img/escudo-san-jorge.png"
-                                alt="Escudo Alcaldia Municipal de San Jorge"
-                                class="relative w-72 sm:w-80 lg:w-96 h-auto drop-shadow-2xl"
-                            >
-                        </div>
-                    </div>
+                <!-- Los unicos dos botones de la pagina -->
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <router-link
+                        to="/registro"
+                        class="px-8 py-4 bg-gradient-to-r from-sky-500 to-cyan-400 text-slate-900 font-bold rounded-xl hover:from-sky-400 hover:to-cyan-300 shadow-lg shadow-sky-500/30 transition flex items-center gap-2"
+                    >
+                        <span>📝</span> Crear mi cuenta
+                    </router-link>
+                    <router-link
+                        to="/login"
+                        class="px-8 py-4 bg-slate-800/80 border border-slate-700 text-white font-bold rounded-xl hover:bg-slate-700 transition flex items-center gap-2"
+                    >
+                        <span>🔐</span> Iniciar sesion
+                    </router-link>
                 </div>
             </div>
         </section>
 
         <!-- LEMA INSTITUCIONAL -->
-        <section class="bg-amber-400 py-6">
+        <section class="border-y border-slate-800 bg-slate-900/50 py-6">
             <div class="max-w-7xl mx-auto px-6 text-center">
-                <p class="text-slate-900 font-bold text-lg sm:text-xl">
+                <p class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-300 font-bold text-lg sm:text-xl">
                     "Humildad, Transparencia y Honestidad"
                 </p>
-                <p class="text-slate-700 text-sm mt-1">Valores de nuestra Alcaldia Municipal</p>
+                <p class="text-slate-500 text-sm mt-1">Valores de nuestra Alcaldia Municipal</p>
             </div>
         </section>
 
-        <!-- ESTADISTICAS DEL SISTEMA -->
-        <section class="bg-white py-12 border-b border-slate-200">
-            <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-4xl font-extrabold text-sky-700 mb-1">{{ estadisticas.total }}</div>
-                    <div class="text-sm text-slate-600 font-medium">Reportes recibidos</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl font-extrabold text-emerald-600 mb-1">{{ estadisticas.resueltos }}</div>
-                    <div class="text-sm text-slate-600 font-medium">Problemas resueltos</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl font-extrabold text-amber-600 mb-1">{{ estadisticas.enProceso }}</div>
-                    <div class="text-sm text-slate-600 font-medium">En proceso</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl font-extrabold text-slate-700 mb-1">{{ categorias.length }}</div>
-                    <div class="text-sm text-slate-600 font-medium">Tipos de reportes</div>
+        <!-- ESTADISTICA: TIPOS DE REPORTES -->
+        <section class="py-14">
+            <div class="max-w-sm mx-auto px-6">
+                <div class="text-center bg-slate-900/50 border border-slate-800 rounded-2xl py-10 shadow-xl">
+                    <div class="text-6xl font-extrabold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent mb-2">
+                        {{ categorias.length }}
+                    </div>
+                    <div class="text-slate-300 font-semibold text-lg">Tipos de reportes</div>
+                    <div class="text-slate-500 text-sm mt-1">disponibles para la comunidad</div>
                 </div>
             </div>
         </section>
 
         <!-- LLAMADO A LA ACCION COMUNITARIO -->
-        <section class="bg-gradient-to-r from-slate-100 to-sky-50 py-16">
+        <section class="py-16">
             <div class="max-w-4xl mx-auto px-6 text-center">
-                <span class="inline-block px-4 py-1 bg-sky-700 text-white rounded-full text-sm font-bold mb-4">
-                    🤝 UNIDOS POR SAN JORGE
+                <span class="inline-block px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full text-sm font-bold mb-4">
+                    UNIDOS POR SAN JORGE
                 </span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-4">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">
                     Tu participacion hace la diferencia
                 </h2>
-                <p class="text-slate-600 text-lg leading-relaxed mb-6">
+                <p class="text-slate-400 text-lg leading-relaxed mb-6">
                     Cada reporte que envias ayuda a la Alcaldia a identificar y atender los problemas
                     que afectan a nuestra comunidad. Calles dañadas, alumbrado, basura, fugas de agua,
                     parques deteriorados... Todo lo que mejoremos juntos transforma nuestra ciudad.
                 </p>
-                <p class="text-slate-700 font-bold text-lg mb-8">
-                    Si ves un problema, ¡reportalo! Tu comunidad cuenta contigo. 💪
+                <p class="text-white font-bold text-lg">
+                    Si ves un problema, ¡reportalo! Tu comunidad cuenta contigo.
                 </p>
-                <router-link
-                    to="/registro"
-                    class="inline-block px-8 py-4 bg-sky-700 text-white font-bold rounded-xl hover:bg-sky-800 shadow-lg shadow-sky-700/30 transition"
-                >
-                    Unirme ahora →
-                </router-link>
             </div>
         </section>
 
@@ -177,84 +126,85 @@
         <section class="py-16">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-3">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
                         ¿Que problemas puedes reportar?
                     </h2>
-                    <p class="text-slate-600 text-lg">
+                    <p class="text-slate-400 text-lg">
                         Estos son los tipos de problemas que la Alcaldia atiende
                     </p>
                 </div>
 
-                <!-- Lista de categorias -->
+                <!-- Estado de carga -->
                 <div v-if="cargandoCategorias" class="text-center py-12">
                     <div class="text-5xl mb-3 animate-pulse">⏳</div>
-                    <p class="text-slate-600">Cargando categorias...</p>
+                    <p class="text-slate-400">Cargando categorias...</p>
                 </div>
 
+                <!-- Lista de categorias -->
                 <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <div
                         v-for="categoria in categorias"
                         :key="categoria.id"
-                        class="bg-white rounded-2xl p-6 border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer"
+                        class="bg-slate-900/50 rounded-2xl p-6 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 hover:-translate-y-1 transition-all"
                     >
                         <div
                             class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-4"
-                            :style="{ backgroundColor: categoria.color + '20' }"
+                            :style="{ backgroundColor: categoria.color + '25' }"
                         >
                             {{ categoria.icono }}
                         </div>
-                        <h3 class="font-bold text-slate-800 text-lg mb-1">{{ categoria.nombre }}</h3>
-                        <p class="text-sm text-slate-500">{{ categoria.descripcion }}</p>
+                        <h3 class="font-bold text-white text-lg mb-1">{{ categoria.nombre }}</h3>
+                        <p class="text-sm text-slate-400">{{ categoria.descripcion }}</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- COMO FUNCIONA -->
-        <section class="bg-slate-100 py-16">
+        <section class="py-16 border-t border-slate-800">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-3">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
                         ¿Como funciona?
                     </h2>
-                    <p class="text-slate-600 text-lg">Tres pasos simples para mejorar tu comunidad</p>
+                    <p class="text-slate-400 text-lg">Tres pasos simples para mejorar tu comunidad</p>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8">
                     <!-- Paso 1 -->
-                    <div class="bg-white rounded-2xl p-8 text-center shadow-sm hover:shadow-md transition">
-                        <div class="w-16 h-16 bg-sky-700 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                    <div class="bg-slate-900/50 rounded-2xl p-8 text-center border border-slate-800 hover:border-sky-500/50 transition">
+                        <div class="w-16 h-16 bg-gradient-to-br from-sky-500 to-cyan-400 text-slate-900 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                             1
                         </div>
                         <div class="text-4xl mb-3">📝</div>
-                        <h3 class="font-bold text-slate-800 text-xl mb-2">Reporta</h3>
-                        <p class="text-slate-600">
+                        <h3 class="font-bold text-white text-xl mb-2">Reporta</h3>
+                        <p class="text-slate-400">
                             Crea tu cuenta gratuita y reporta el problema con titulo, descripcion
                             y la ubicacion exacta.
                         </p>
                     </div>
 
                     <!-- Paso 2 -->
-                    <div class="bg-white rounded-2xl p-8 text-center shadow-sm hover:shadow-md transition">
-                        <div class="w-16 h-16 bg-amber-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                    <div class="bg-slate-900/50 rounded-2xl p-8 text-center border border-slate-800 hover:border-amber-500/50 transition">
+                        <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-400 text-slate-900 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                             2
                         </div>
                         <div class="text-4xl mb-3">🔄</div>
-                        <h3 class="font-bold text-slate-800 text-xl mb-2">Seguimiento</h3>
-                        <p class="text-slate-600">
+                        <h3 class="font-bold text-white text-xl mb-2">Seguimiento</h3>
+                        <p class="text-slate-400">
                             La Alcaldia clasifica tu reporte, lo prioriza y trabaja en su solucion.
                             Tu puedes ver el avance en todo momento.
                         </p>
                     </div>
 
                     <!-- Paso 3 -->
-                    <div class="bg-white rounded-2xl p-8 text-center shadow-sm hover:shadow-md transition">
-                        <div class="w-16 h-16 bg-emerald-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                    <div class="bg-slate-900/50 rounded-2xl p-8 text-center border border-slate-800 hover:border-emerald-500/50 transition">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-green-400 text-slate-900 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                             3
                         </div>
                         <div class="text-4xl mb-3">✅</div>
-                        <h3 class="font-bold text-slate-800 text-xl mb-2">Solucion</h3>
-                        <p class="text-slate-600">
+                        <h3 class="font-bold text-white text-xl mb-2">Solucion</h3>
+                        <p class="text-slate-400">
                             Recibe confirmacion cuando el problema sea atendido y resuelto.
                             ¡Tu comunidad agradece tu aporte!
                         </p>
@@ -263,50 +213,22 @@
             </div>
         </section>
 
-        <!-- CTA FINAL -->
-        <section class="bg-gradient-to-br from-sky-700 to-sky-900 text-white py-16">
-            <div class="max-w-4xl mx-auto px-6 text-center">
-                <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">
-                    ¿Listo para sumarte al cambio?
-                </h2>
-                <p class="text-sky-100 text-lg mb-8">
-                    Es gratis, rapido y tu participacion realmente importa.
-                </p>
-                <div class="flex flex-wrap gap-4 justify-center">
-                    <router-link
-                        to="/registro"
-                        class="px-8 py-4 bg-amber-400 text-slate-900 font-bold rounded-xl hover:bg-amber-300 shadow-lg transition"
-                    >
-                        Crear cuenta gratuita
-                    </router-link>
-                    <router-link
-                        to="/login"
-                        class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white/20 transition"
-                    >
-                        Ya tengo cuenta
-                    </router-link>
-                </div>
-            </div>
-        </section>
-
         <!-- FOOTER -->
-        <footer class="bg-slate-900 text-slate-300 py-12">
+        <footer class="bg-black/40 border-t border-slate-800 py-12">
             <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8">
 
                 <!-- Columna 1: Identidad -->
                 <div>
                     <div class="flex items-center gap-3 mb-4">
-                        <img
-                            src="/img/escudo-san-jorge.png"
-                            alt="Escudo"
-                            class="w-12 h-12 object-contain"
-                        >
+                        <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-cyan-400 rounded-xl flex items-center justify-center text-slate-900 font-extrabold shadow-lg shadow-sky-500/30">
+                            SJ
+                        </div>
                         <div>
                             <span class="font-bold text-white block">Alcaldia de San Jorge</span>
-                            <span class="text-xs text-slate-400">Fundado 10 de Julio 1920</span>
+                            <span class="text-xs text-slate-500">Fundado 10 de Julio 1920</span>
                         </div>
                     </div>
-                    <p class="text-sm leading-relaxed">
+                    <p class="text-sm text-slate-400 leading-relaxed">
                         Alcaldia Municipal de San Jorge trabajando por una ciudad mejor con la
                         participacion activa de toda la comunidad.
                     </p>
@@ -315,8 +237,8 @@
                 <!-- Columna 2: Contacto -->
                 <div>
                     <h4 class="font-bold text-white mb-3">Contacto</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li>📍 Centro de San Jorge, El Salvador</li>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li>📍 San Jorge, San Miguel, El Salvador</li>
                         <li>📞 (503) 2664-0000</li>
                         <li>✉ contacto@sanjorge.gob.sv</li>
                     </ul>
@@ -325,7 +247,7 @@
                 <!-- Columna 3: Horarios -->
                 <div>
                     <h4 class="font-bold text-white mb-3">Horarios de atencion</h4>
-                    <p class="text-sm leading-relaxed">
+                    <p class="text-sm text-slate-400 leading-relaxed">
                         Lunes a Viernes: 8:00 - 16:00<br>
                         Sabado: 8:00 - 12:00<br>
                         Domingo: Cerrado
@@ -333,7 +255,7 @@
                 </div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-6 mt-8 pt-6 border-t border-slate-800 text-center text-sm">
+            <div class="max-w-7xl mx-auto px-6 mt-8 pt-6 border-t border-slate-800 text-center text-sm text-slate-500">
                 © 2026 Alcaldia Municipal de San Jorge · Sistema LICAM · Todos los derechos reservados
             </div>
         </footer>
@@ -344,48 +266,32 @@
 /**
  * Vista de Inicio (Landing publica) del sistema LICAM.
  *
- * Pagina de bienvenida visible para visitantes no autenticados.
+ * Pagina de bienvenida con tema oscuro elegante (azul-noche).
  * Presenta la identidad de la Alcaldia Municipal de San Jorge,
- * un llamado a la accion para la comunidad, y muestra las
- * categorias de reportes disponibles asi como estadisticas
- * generales del sistema.
+ * un llamado a la accion comunitario y muestra las categorias
+ * de reportes disponibles.
  *
  * @project LICAM - Linea Ciudadana de Atencion Municipal
  */
 
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 // Estado reactivo de la vista
 const categorias = ref([]);
-const reportes = ref([]);
 const cargandoCategorias = ref(false);
 
 /**
- * Estadisticas calculadas a partir de los reportes obtenidos de la API.
- * Se muestran como motivacion publica en la landing.
- */
-const estadisticas = computed(() => {
-    return {
-        total: reportes.value.length,
-        resueltos: reportes.value.filter(r => r.estado === 'resuelto').length,
-        enProceso: reportes.value.filter(r => r.estado === 'en_proceso').length,
-    };
-});
-
-/**
- * Carga el listado publico de categorias.
- * Se usa axios directo (sin token) porque esta vista es publica.
+ * Carga el listado publico de categorias desde la API.
+ * Si la peticion falla, usa un listado predeterminado como respaldo.
  */
 const cargarCategorias = async () => {
     cargandoCategorias.value = true;
     try {
-        // Hacemos peticion publica intentando con el endpoint
-        // Si requiere autenticacion, simplemente no mostraremos las categorias
         const response = await axios.get('/api/categorias');
         categorias.value = response.data.data || [];
     } catch (error) {
-        // Si falla por autenticacion, mostramos categorias predeterminadas
+        // Respaldo: categorias predeterminadas si la API no responde
         categorias.value = obtenerCategoriasPorDefecto();
     } finally {
         cargandoCategorias.value = false;
@@ -393,8 +299,8 @@ const cargarCategorias = async () => {
 };
 
 /**
- * Categorias predeterminadas que se muestran si no se puede consultar la API.
- * Sirve como fallback para que la pagina siempre se vea completa.
+ * Categorias predeterminadas que se muestran si la API no esta disponible.
+ * Sirve como respaldo para que la pagina siempre se vea completa.
  */
 const obtenerCategoriasPorDefecto = () => {
     return [
@@ -410,25 +316,10 @@ const obtenerCategoriasPorDefecto = () => {
 };
 
 /**
- * Intenta cargar las estadisticas de reportes.
- * Si falla, las estadisticas quedan en cero.
- */
-const cargarEstadisticas = async () => {
-    try {
-        const response = await axios.get('/api/reportes');
-        reportes.value = response.data.data || [];
-    } catch (error) {
-        // Si falla, dejamos las estadisticas en cero
-        reportes.value = [];
-    }
-};
-
-/**
  * Hook de Vue: se ejecuta al montar el componente.
- * Carga las categorias y estadisticas iniciales.
+ * Carga las categorias disponibles.
  */
 onMounted(() => {
     cargarCategorias();
-    cargarEstadisticas();
 });
 </script>
