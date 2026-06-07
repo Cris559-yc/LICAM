@@ -256,12 +256,20 @@
                     <!-- Ubicacion -->
                     <div>
                         <p class="text-xs font-bold text-slate-500 uppercase mb-2">Ubicacion</p>
-                        <div class="bg-slate-50 p-4 rounded-xl space-y-1">
+                        <div class="bg-slate-50 p-4 rounded-xl space-y-1 mb-3">
                             <p class="text-slate-700">📍 {{ reporteSeleccionado.direccion || 'Sin direccion especificada' }}</p>
                             <p class="text-xs text-slate-500 font-mono">
                                 Lat: {{ reporteSeleccionado.latitud }}, Lng: {{ reporteSeleccionado.longitud }}
                             </p>
                         </div>
+
+                        <!-- Mapa de solo lectura mostrando la ubicacion del reporte -->
+                        <MapaUbicacion
+                            :latitud="Number(reporteSeleccionado.latitud)"
+                            :longitud="Number(reporteSeleccionado.longitud)"
+                            :seleccionable="false"
+                            :key="reporteSeleccionado.id"
+                        />
                     </div>
 
                    <!-- Evidencia fotografica -->
@@ -357,6 +365,67 @@
                         </div>
                     </div>
 
+                    <!-- COMENTARIOS -->
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">
+                            Comentarios ({{ comentarios.length }})
+                        </p>
+
+                        <!-- Lista de comentarios -->
+                        <div v-if="comentarios.length > 0" class="space-y-3 mb-4">
+                            <div
+                                v-for="comentario in comentarios"
+                                :key="comentario.id"
+                                class="flex gap-3"
+                            >
+                                <div
+                                    class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0"
+                                    :class="esAdmin(comentario)
+                                        ? 'bg-sky-600 text-white'
+                                        : 'bg-amber-400 text-slate-900'"
+                                >
+                                    {{ inicialesComentario(comentario.usuario) }}
+                                </div>
+                                <div
+                                    class="flex-1 rounded-xl p-3"
+                                    :class="esAdmin(comentario) ? 'bg-sky-50' : 'bg-slate-50'"
+                                >
+                                    <div class="flex justify-between items-start mb-1">
+                                        <p class="font-bold text-slate-800 text-sm">
+                                            {{ comentario.usuario?.name }} {{ comentario.usuario?.apellido }}
+                                            <span
+                                                class="text-xs font-normal"
+                                                :class="esAdmin(comentario) ? 'text-sky-700' : 'text-slate-500'"
+                                            >
+                                                · {{ esAdmin(comentario) ? 'Administrador' : 'Ciudadano' }}
+                                            </span>
+                                        </p>
+                                        <span class="text-xs text-slate-400">{{ formatearFecha(comentario.created_at) }}</span>
+                                    </div>
+                                    <p class="text-slate-700 text-sm">{{ comentario.contenido }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p v-else class="text-sm text-slate-400 mb-4">Aun no hay comentarios en este reporte.</p>
+
+                        <!-- Formulario para nuevo comentario -->
+                        <div class="flex gap-2">
+                            <textarea
+                                v-model="nuevoComentario"
+                                rows="2"
+                                placeholder="Escribe un comentario para el ciudadano..."
+                                class="flex-1 px-4 py-2 border-2 border-slate-200 rounded-lg focus:border-sky-600 focus:outline-none resize-none text-sm"
+                            ></textarea>
+                            <button
+                                @click="enviarComentario"
+                                :disabled="enviandoComentario || !nuevoComentario.trim()"
+                                class="px-4 py-2 bg-sky-700 text-white font-semibold rounded-lg hover:bg-sky-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm self-end"
+                            >
+                                {{ enviandoComentario ? '...' : 'Enviar' }}
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- HISTORIAL DE SEGUIMIENTOS -->
                     <div v-if="reporteSeleccionado.seguimientos && reporteSeleccionado.seguimientos.length > 0">
                         <p class="text-xs font-bold text-slate-500 uppercase mb-2">Historial de cambios</p>
@@ -422,12 +491,11 @@
  * Los cambios de estado se registran automaticamente en el historial
  * de seguimientos por el backend.
  *
- * @project LICAM - Linea Ciudadana de Atencion Municipal
  */
-
 import { ref, reactive, computed, onMounted } from 'vue';
 import api from '@/services/api';
 import SidebarAdmin from '@/components/SidebarAdmin.vue';
+import MapaUbicacion from '@/components/MapaUbicacion.vue';
 
 // Estado reactivo principal
 const reportes = ref([]);
@@ -452,6 +520,11 @@ const gestion = reactive({
 const guardando = ref(false);
 const mensajeExito = ref('');
 const errorGuardar = ref('');
+
+// Estado de los comentarios
+const comentarios = ref([]);
+const nuevoComentario = ref('');
+const enviandoComentario = ref(false);
 
 /**
  * Indica si hay algun filtro activo.
@@ -524,6 +597,9 @@ const abrirModalGestion = async (reporte) => {
         gestion.estado = reporteSeleccionado.value.estado;
         gestion.prioridad = reporteSeleccionado.value.prioridad;
         gestion.observacion = '';
+
+        // Cargar los comentarios del reporte
+        await cargarComentarios(reporte.id);
     } catch (error) {
         console.error('Error al cargar detalles del reporte:', error);
     }
@@ -571,6 +647,65 @@ const guardarCambios = async () => {
     } finally {
         guardando.value = false;
     }
+};
+
+/**
+ * Carga los comentarios de un reporte desde la API.
+ *
+ * @param {number} reporteId - ID del reporte
+ */
+const cargarComentarios = async (reporteId) => {
+    try {
+        const response = await api.get(`/reportes/${reporteId}/comentarios`);
+        comentarios.value = response.data.data || [];
+    } catch (error) {
+        console.error('Error al cargar comentarios:', error);
+        comentarios.value = [];
+    }
+};
+
+/**
+ * Envia un nuevo comentario al reporte actual.
+ */
+const enviarComentario = async () => {
+    if (!nuevoComentario.value.trim()) return;
+
+    enviandoComentario.value = true;
+    try {
+        await api.post(`/reportes/${reporteSeleccionado.value.id}/comentarios`, {
+            contenido: nuevoComentario.value,
+        });
+        // Limpiar el campo y recargar la lista de comentarios
+        nuevoComentario.value = '';
+        await cargarComentarios(reporteSeleccionado.value.id);
+    } catch (error) {
+        console.error('Error al enviar comentario:', error);
+    } finally {
+        enviandoComentario.value = false;
+    }
+};
+
+/**
+ * Determina si un comentario fue escrito por un administrador.
+ *
+ * @param {Object} comentario
+ * @returns {boolean}
+ */
+const esAdmin = (comentario) => {
+    return comentario.usuario?.rol?.nombre === 'administrador';
+};
+
+/**
+ * Calcula las iniciales del autor de un comentario.
+ *
+ * @param {Object} usuario
+ * @returns {string}
+ */
+const inicialesComentario = (usuario) => {
+    if (!usuario) return '?';
+    const n = usuario.name?.charAt(0) || '';
+    const a = usuario.apellido?.charAt(0) || '';
+    return (n + a).toUpperCase();
 };
 
 /**

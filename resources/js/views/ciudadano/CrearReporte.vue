@@ -227,11 +227,14 @@
                                 {{ obteniendoUbicacion ? 'Obteniendo ubicacion...' : 'Usar mi ubicacion actual' }}
                             </button>
 
-                            <!-- Mensaje informativo sobre coordenadas -->
-                            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700">
-                                <p class="font-semibold mb-1">💡 Ayuda con las coordenadas:</p>
-                                <p>San Jorge esta aproximadamente en latitud 13.4775 y longitud -88.4525. Puedes usar el boton de arriba para obtener tu ubicacion automaticamente.</p>
-                            </div>
+                            <!-- Mapa interactivo para seleccionar ubicacion -->
+                            <MapaUbicacion
+                                :latitud="formulario.latitud || 13.4775"
+                                :longitud="formulario.longitud || -88.4525"
+                                :seleccionable="true"
+                                @actualizar-ubicacion="actualizarUbicacionDesdeMapa"
+                            />
+
 
                         </div>
                     </div>
@@ -299,6 +302,7 @@
 </template>
 
 <script setup>
+
 /**
  * Vista del Ciudadano: Crear Reporte
  *
@@ -311,12 +315,12 @@
  * automaticamente las coordenadas del usuario.
  *
  */
-
 import { ref, reactive, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import api from '@/services/api';
 import NavbarCiudadano from '@/components/NavbarCiudadano.vue';
+import MapaUbicacion from '@/components/MapaUbicacion.vue';
 
 // Hooks de Vue Router y Pinia
 const router = useRouter();
@@ -356,6 +360,17 @@ const iniciales = computed(() => {
     const inicialApellido = authStore.user.apellido?.charAt(0) || '';
     return (inicialNombre + inicialApellido).toUpperCase();
 });
+
+/**
+ * Actualiza las coordenadas del formulario cuando el usuario
+ * selecciona una ubicacion en el mapa.
+ *
+ * @param {Object} coordenadas - { latitud, longitud }
+ */
+const actualizarUbicacionDesdeMapa = (coordenadas) => {
+    formulario.latitud = coordenadas.latitud;
+    formulario.longitud = coordenadas.longitud;
+};
 
 /**
  * Carga el listado de categorias disponibles desde la API.

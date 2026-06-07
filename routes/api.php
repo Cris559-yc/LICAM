@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\ReporteController;
+use App\Http\Controllers\Api\ComentarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -63,4 +64,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // CRUD de Reportes (corazon del sistema)
     Route::apiResource('reportes', ReporteController::class);
+
+    // Comentarios de reporte (listar y crear)
+    Route::get('reportes/{reporteId}/comentarios', [ComentarioController::class, 'index']);
+    Route::post('reportes/{reporteId}/comentarios', [ComentarioController::class, 'store']);
 });
