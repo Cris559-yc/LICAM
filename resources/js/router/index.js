@@ -53,6 +53,13 @@ const routes = [
         meta: { requiresAuth: true, rol: 'ciudadano' },
     },
 
+    {
+        path: '/ciudadano/reporte/:id',
+        name: 'ciudadano.detalleReporte',
+        component: () => import('@/views/ciudadano/DetalleReporte.vue'),
+        meta: { requiresAuth: true, rol: 'ciudadano' },
+    },
+
     // ============================================================
     // RUTAS DEL ADMINISTRADOR
     // ============================================================

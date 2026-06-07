@@ -199,7 +199,8 @@
                                 </a>
                             </div>
 
-                            <!-- Pie con fechas -->
+
+                            <!-- Pie con fechas y boton de detalle -->
                             <div class="flex justify-between items-center pt-3 mt-3 border-t border-slate-100 flex-wrap gap-2">
                                 <div class="flex gap-4 text-xs text-slate-500 flex-wrap">
                                     <span>📅 Reportado: {{ formatearFecha(reporte.fecha_reporte) }}</span>
@@ -207,6 +208,12 @@
                                         ✅ Resuelto: {{ formatearFecha(reporte.fecha_resolucion) }}
                                     </span>
                                 </div>
+                                <router-link
+                                    :to="`/ciudadano/reporte/${reporte.id}`"
+                                    class="text-sky-700 text-sm font-bold hover:underline"
+                                >
+                                    Ver detalle →
+                                </router-link>
                             </div>
                         </div>
                     </div>
