@@ -119,6 +119,53 @@
                             Ubicacion del problema
                         </h3>
 
+                        <!-- TARJETA: Evidencia fotografica -->
+                    <div class="bg-white rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-slate-800 text-xl mb-6 flex items-center gap-2">
+                            <span class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center">📷</span>
+                            Evidencia fotografica (opcional)
+                        </h3>
+
+                        <!-- Zona de carga -->
+                        <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-sky-500 hover:bg-sky-50/50 transition">
+                            <div class="text-5xl mb-3">📸</div>
+                            <p class="font-semibold text-slate-700 mb-1">Selecciona hasta 4 fotos del problema</p>
+                            <p class="text-sm text-slate-500 mb-4">JPG, PNG o WEBP · Maximo 5 MB por imagen</p>
+                            <label class="inline-block px-6 py-2 bg-sky-700 text-white font-semibold rounded-lg hover:bg-sky-800 cursor-pointer transition">
+                                Seleccionar fotos
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                                    multiple
+                                    @change="seleccionarImagenes"
+                                    :disabled="cargando"
+                                    class="hidden"
+                                >
+                            </label>
+                        </div>
+
+                        <!-- Vista previa de las imagenes seleccionadas -->
+                        <div v-if="imagenesPreview.length > 0" class="grid grid-cols-4 gap-3 mt-4">
+                            <div
+                                v-for="(img, index) in imagenesPreview"
+                                :key="index"
+                                class="relative aspect-square rounded-xl overflow-hidden border border-slate-200"
+                            >
+                                <img :src="img.preview" alt="Vista previa" class="w-full h-full object-cover">
+                                <button
+                                    type="button"
+                                    @click="quitarImagen(index)"
+                                    class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs font-bold hover:bg-red-600"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Error de imagenes -->
+                        <p v-if="errores.imagenes" class="text-red-600 text-xs mt-2">{{ errores.imagenes[0] }}</p>
+                    </div>
+
                         <div class="space-y-5">
 
                             <!-- Direccion textual -->
@@ -263,7 +310,6 @@
  * Incluye funcionalidad de geolocalizacion del navegador para obtener
  * automaticamente las coordenadas del usuario.
  *
- * @project LICAM - Linea Ciudadana de Atencion Municipal
  */
 
 import { ref, reactive, computed, onMounted } from 'vue';
@@ -285,6 +331,10 @@ const formulario = reactive({
     latitud: null,
     longitud: null,
 });
+
+// Imagenes seleccionadas (archivos) y sus vistas previas
+const imagenesArchivos = ref([]);
+const imagenesPreview = ref([]);
 
 // Listado de categorias disponibles
 const categorias = ref([]);
@@ -364,7 +414,49 @@ const obtenerUbicacionActual = () => {
 };
 
 /**
+ * Maneja la seleccion de imagenes desde el input de archivos.
+ * Genera una vista previa de cada imagen y las almacena para el envio.
+ *
+ * @param {Event} evento - Evento change del input file
+ */
+const seleccionarImagenes = (evento) => {
+    const archivos = Array.from(evento.target.files);
+
+    // Validar que no se excedan 4 imagenes en total
+    if (imagenesArchivos.value.length + archivos.length > 4) {
+        errorGeneral.value = 'Solo puedes adjuntar un maximo de 4 imagenes.';
+        return;
+    }
+
+    archivos.forEach((archivo) => {
+        // Guardar el archivo para el envio
+        imagenesArchivos.value.push(archivo);
+
+        // Generar vista previa con FileReader
+        const lector = new FileReader();
+        lector.onload = (e) => {
+            imagenesPreview.value.push({ preview: e.target.result });
+        };
+        lector.readAsDataURL(archivo);
+    });
+
+    // Limpiar el input para permitir volver a seleccionar los mismos archivos
+    evento.target.value = '';
+};
+
+/**
+ * Quita una imagen de la lista de seleccionadas.
+ *
+ * @param {number} index - Indice de la imagen a quitar
+ */
+const quitarImagen = (index) => {
+    imagenesArchivos.value.splice(index, 1);
+    imagenesPreview.value.splice(index, 1);
+};
+
+/**
  * Envia el formulario de reporte a la API del backend.
+ * Usa FormData para poder incluir los archivos de imagen.
  * Si es exitoso, muestra un mensaje y redirige a "Mis Reportes".
  */
 const enviarReporte = async () => {
@@ -375,10 +467,28 @@ const enviarReporte = async () => {
     cargando.value = true;
 
     try {
-        // Enviar peticion POST a la API
-        const response = await api.post('/reportes', formulario);
+        // Construir FormData para enviar datos + archivos
+        const datos = new FormData();
+        datos.append('titulo', formulario.titulo);
+        datos.append('descripcion', formulario.descripcion);
+        datos.append('latitud', formulario.latitud);
+        datos.append('longitud', formulario.longitud);
+        if (formulario.direccion) {
+            datos.append('direccion', formulario.direccion);
+        }
+        if (formulario.categoria_id) {
+            datos.append('categoria_id', formulario.categoria_id);
+        }
+        // Adjuntar cada imagen seleccionada
+        imagenesArchivos.value.forEach((archivo) => {
+            datos.append('imagenes[]', archivo);
+        });
 
-        // Mostrar mensaje de exito
+        // Enviar peticion POST con cabecera multipart
+        const response = await api.post('/reportes', datos, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
         mensajeExito.value = response.data.message || 'Reporte creado exitosamente.';
 
         // Esperar 2 segundos y redirigir a Mis Reportes
@@ -387,10 +497,8 @@ const enviarReporte = async () => {
         }, 2000);
 
     } catch (error) {
-        // Manejar errores de la API
         if (error.response) {
             if (error.response.status === 422) {
-                // Errores de validacion
                 errores.value = error.response.data.errors || {};
                 errorGeneral.value = 'Por favor corrige los errores en el formulario.';
             } else {

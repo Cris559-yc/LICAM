@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Reporte;
 use App\Models\Seguimiento;
+use App\Models\Imagen;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -85,16 +87,16 @@ class ReporteController extends Controller
         ], 200);
     }
 
-    /**
-     * Crear un nuevo reporte ciudadano.
+       /**
+     * Crear un nuevo reporte ciudadano con imagenes opcionales.
      *
      * POST /api/reportes
      *
-     * Reglas de negocio aplicadas:
+     * Reglas aplicadas:
      * - El user_id se obtiene del usuario autenticado (no se acepta del request)
      * - El estado inicial siempre es "pendiente"
      * - La categoria es opcional (el administrador la asignara despues)
-     * - La prioridad por defecto es "media" si no se especifica
+     * - Se pueden adjuntar hasta 4 imagenes de evidencia
      *
      * @param Request $request
      * @return JsonResponse
@@ -109,6 +111,8 @@ class ReporteController extends Controller
             'longitud'     => 'required|numeric|between:-180,180',
             'direccion'    => 'nullable|string|max:255',
             'categoria_id' => 'nullable|exists:categorias,id',
+            'imagenes'     => 'nullable|array|max:4',
+            'imagenes.*'   => 'image|mimes:jpeg,jpg,png,webp|max:5120', // 5MB por imagen
         ], [
             'titulo.required'      => 'El titulo del reporte es obligatorio.',
             'titulo.max'           => 'El titulo no puede exceder los 150 caracteres.',
@@ -118,6 +122,10 @@ class ReporteController extends Controller
             'longitud.required'    => 'La longitud de la ubicacion es obligatoria.',
             'longitud.between'     => 'La longitud debe estar entre -180 y 180 grados.',
             'categoria_id.exists'  => 'La categoria seleccionada no existe.',
+            'imagenes.max'         => 'Solo puedes adjuntar un maximo de 4 imagenes.',
+            'imagenes.*.image'     => 'El archivo debe ser una imagen valida.',
+            'imagenes.*.mimes'     => 'Las imagenes deben ser JPG, PNG o WEBP.',
+            'imagenes.*.max'       => 'Cada imagen no puede superar los 5 MB.',
         ]);
 
         if ($validator->fails()) {
@@ -128,32 +136,65 @@ class ReporteController extends Controller
             ], 422);
         }
 
-        // Crear el reporte con los datos validados
-        $reporte = Reporte::create([
-            'user_id'       => $request->user()->id,
-            'categoria_id'  => $request->categoria_id,
-            'titulo'        => $request->titulo,
-            'descripcion'   => $request->descripcion,
-            'latitud'       => $request->latitud,
-            'longitud'      => $request->longitud,
-            'direccion'     => $request->direccion,
-            'estado'        => Reporte::ESTADO_PENDIENTE,
-            'prioridad'     => Reporte::PRIORIDAD_MEDIA,
-            'fecha_reporte' => now(),
-        ]);
+        // Usar transaccion para asegurar consistencia entre reporte e imagenes
+        DB::beginTransaction();
 
-        // Cargar las relaciones para incluirlas en la respuesta
-        $reporte->load(['usuario:id,name,apellido,email', 'categoria']);
+        try {
+            // Crear el reporte con los datos validados
+            $reporte = Reporte::create([
+                'user_id'       => $request->user()->id,
+                'categoria_id'  => $request->categoria_id,
+                'titulo'        => $request->titulo,
+                'descripcion'   => $request->descripcion,
+                'latitud'       => $request->latitud,
+                'longitud'      => $request->longitud,
+                'direccion'     => $request->direccion,
+                'estado'        => Reporte::ESTADO_PENDIENTE,
+                'prioridad'     => Reporte::PRIORIDAD_MEDIA,
+                'fecha_reporte' => now(),
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Reporte creado exitosamente. La alcaldia lo revisara pronto.',
-            'data'    => $reporte,
-        ], 201);
+            // Procesar las imagenes adjuntas si existen
+            if ($request->hasFile('imagenes')) {
+                foreach ($request->file('imagenes') as $archivo) {
+                    // Guardar el archivo fisico en storage/app/public/reportes
+                    $ruta = $archivo->store('reportes', 'public');
+
+                    // Registrar la imagen en la base de datos
+                    Imagen::create([
+                        'reporte_id'     => $reporte->id,
+                        'url'            => $ruta,
+                        'nombre_archivo' => $archivo->getClientOriginalName(),
+                        'tamano'         => $archivo->getSize(),
+                        'tipo_mime'      => $archivo->getMimeType(),
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            // Cargar las relaciones para incluirlas en la respuesta
+            $reporte->load(['usuario:id,name,apellido,email', 'categoria', 'imagenes']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Reporte creado exitosamente. La alcaldia lo revisara pronto.',
+                'data'    => $reporte,
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear el reporte.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
-     * Obtener un reporte especifico con todos sus detalles.
+     * reporte especifico con todos sus detalles.
      *
      * GET /api/reportes/{id}
      *

@@ -182,6 +182,23 @@
                                 {{ reporte.descripcion }}
                             </p>
 
+                            <!-- Miniaturas de imagenes -->
+                            <div v-if="reporte.imagenes && reporte.imagenes.length > 0" class="flex gap-2 mt-3">
+                                <a
+                                    v-for="img in reporte.imagenes"
+                                    :key="img.id"
+                                    :href="img.url_completa"
+                                    target="_blank"
+                                    class="block w-16 h-16 rounded-lg overflow-hidden border border-slate-200 hover:opacity-90 transition"
+                                >
+                                    <img
+                                        :src="img.url_completa"
+                                        :alt="img.nombre_archivo"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </a>
+                            </div>
+
                             <!-- Pie con fechas -->
                             <div class="flex justify-between items-center pt-3 mt-3 border-t border-slate-100 flex-wrap gap-2">
                                 <div class="flex gap-4 text-xs text-slate-500 flex-wrap">
@@ -210,7 +227,6 @@
  *
  * Se conecta con la API del backend para obtener los datos en tiempo real.
  *
- * @project LICAM - Linea Ciudadana de Atencion Municipal
  */
 
 import { ref, computed, onMounted } from 'vue';

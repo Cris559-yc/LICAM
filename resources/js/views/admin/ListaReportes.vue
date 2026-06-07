@@ -264,6 +264,26 @@
                         </div>
                     </div>
 
+                   <!-- Evidencia fotografica -->
+                    <div v-if="reporteSeleccionado.imagenes && reporteSeleccionado.imagenes.length > 0">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">Evidencia fotografica</p>
+                        <div class="grid grid-cols-3 gap-3">
+                            <a
+                                v-for="img in reporteSeleccionado.imagenes"
+                                :key="img.id"
+                                :href="img.url_completa"
+                                target="_blank"
+                                class="block aspect-square rounded-xl overflow-hidden border border-slate-200 hover:opacity-90 transition"
+                            >
+                                <img
+                                    :src="img.url_completa"
+                                    :alt="img.nombre_archivo"
+                                    class="w-full h-full object-cover"
+                                >
+                            </a>
+                        </div>
+                    </div>
+
                     <!-- FORMULARIO DE GESTION -->
                     <div class="bg-sky-50 border-2 border-sky-200 rounded-xl p-5 space-y-4">
                         <h4 class="font-bold text-slate-800">⚙️ Gestion del reporte</h4>
