@@ -49,6 +49,13 @@
         <div class="flex items-center justify-center p-8 lg:p-16 bg-slate-50">
             <div class="w-full max-w-md py-8">
 
+                <router-link
+                    to="/"
+                    class="inline-flex items-center gap-2 text-slate-500 hover:text-sky-700 font-semibold text-sm mb-6 transition"
+                >
+                    <span>←</span> Inicio
+                </router-link>
+
                 <!-- Logo movil -->
                 <div class="lg:hidden flex items-center gap-3 mb-8">
                     <div class="w-12 h-12 bg-sky-700 rounded-full flex items-center justify-center text-white font-bold">
