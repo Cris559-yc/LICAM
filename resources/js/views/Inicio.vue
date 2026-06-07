@@ -1,9 +1,8 @@
 <template>
     <!--
-        Vista: Pagina de Inicio (Landing publica) - Tema oscuro elegante
-        Pagina de bienvenida del sistema LICAM con diseño en tonos azul-noche.
-        Presenta la identidad de la Alcaldia, llamado a la accion comunitario,
-        categorias de reportes y el proceso de funcionamiento.
+        Vista: Pagina de Inicio (Landing publica)
+        Pagina de bienvenida del sistema LICAM
+
     -->
     <div class="min-h-screen bg-slate-950 text-slate-200">
 
@@ -61,7 +60,7 @@
                     a su solucion y forma parte del cambio que necesita nuestro municipio.
                 </p>
 
-                <!-- Los unicos dos botones de la pagina -->
+                <!-- botones de crear cuenta e iniciar sesion -->
                 <div class="flex flex-wrap gap-4 justify-center">
                     <router-link
                         to="/registro"
@@ -266,7 +265,7 @@
 /**
  * Vista de Inicio (Landing publica) del sistema LICAM.
  *
- * Pagina de bienvenida con tema oscuro elegante (azul-noche).
+ * Pagina de bienvenida.
  * Presenta la identidad de la Alcaldia Municipal de San Jorge,
  * un llamado a la accion comunitario y muestra las categorias
  * de reportes disponibles.

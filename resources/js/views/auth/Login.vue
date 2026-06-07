@@ -7,7 +7,7 @@
     -->
     <div class="min-h-screen grid lg:grid-cols-2">
 
-        <!-- LADO IZQUIERDO: Branding institucional (solo visible en pantallas grandes) -->
+        <!-- LADO IZQUIERDO: Branding institucional -->
         <div class="hidden lg:flex bg-gradient-to-br from-sky-700 via-sky-800 to-sky-900 text-white p-12 flex-col justify-between relative overflow-hidden">
 
             <!-- Efectos decorativos de fondo -->
@@ -60,7 +60,7 @@
                     <span>←</span> Inicio
                 </router-link>
 
-                <!-- Logo movil (solo visible en pantallas pequeñas) -->
+                <!-- Logo movil  -->
                 <div class="lg:hidden flex items-center gap-3 mb-8">
                     <div class="w-12 h-12 bg-sky-700 rounded-full flex items-center justify-center text-white font-bold">
                         SJ

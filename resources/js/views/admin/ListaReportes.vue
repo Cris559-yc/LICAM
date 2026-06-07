@@ -181,12 +181,20 @@
                                         {{ formatearFecha(reporte.created_at) }}
                                     </td>
                                     <td class="py-4 px-4 text-center">
-                                        <button
-                                            @click="abrirModalGestion(reporte)"
-                                            class="px-3 py-1.5 bg-sky-700 text-white text-xs font-bold rounded hover:bg-sky-800 transition"
-                                        >
-                                            Gestionar
-                                        </button>
+                                        <div class="flex gap-2 justify-center">
+                                            <button
+                                                @click="abrirModalGestion(reporte)"
+                                                class="px-3 py-1.5 bg-sky-700 text-white text-xs font-bold rounded hover:bg-sky-800 transition"
+                                            >
+                                                Gestionar
+                                            </button>
+                                            <button
+                                                @click="confirmarEliminar(reporte)"
+                                                class="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded hover:bg-red-700 transition"
+                                            >
+                                                Eliminar
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -473,6 +481,58 @@
 
             </div>
         </div>
+
+                <!-- MODAL DE CONFIRMACION DE ELIMINACION -->
+        <div
+            v-if="reporteAEliminar"
+            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            @click.self="cancelarEliminar"
+        >
+            <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl">
+
+                <!-- Icono de advertencia -->
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                    🗑️
+                </div>
+
+                <h3 class="text-xl font-bold text-slate-800 text-center mb-2">
+                    ¿Eliminar este reporte?
+                </h3>
+                <p class="text-slate-500 text-center text-sm mb-2">
+                    Estas a punto de eliminar el reporte:
+                </p>
+                <p class="text-slate-800 font-semibold text-center mb-6 bg-slate-50 rounded-xl p-3">
+                    "{{ reporteAEliminar.titulo }}"
+                </p>
+                <p class="text-red-600 text-xs text-center mb-6">
+                    Esta accion es irreversible. Se eliminaran tambien todas las imagenes, seguimientos y comentarios asociados.
+                </p>
+
+                <!-- Mensaje de error si falla -->
+                <div v-if="errorEliminar" class="mb-4 p-3 bg-red-50 border-2 border-red-200 rounded-xl text-red-700 text-sm text-center">
+                    {{ errorEliminar }}
+                </div>
+
+                <!-- Botones -->
+                <div class="flex gap-3">
+                    <button
+                        @click="cancelarEliminar"
+                        :disabled="eliminando"
+                        class="flex-1 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 disabled:opacity-50 transition"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        @click="ejecutarEliminar"
+                        :disabled="eliminando"
+                        class="flex-1 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 disabled:opacity-50 shadow-lg transition"
+                    >
+                        {{ eliminando ? 'Eliminando...' : 'Si, eliminar' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -525,6 +585,11 @@ const errorGuardar = ref('');
 const comentarios = ref([]);
 const nuevoComentario = ref('');
 const enviandoComentario = ref(false);
+
+// Estado de la eliminacion de reportes
+const reporteAEliminar = ref(null);
+const eliminando = ref(false);
+const errorEliminar = ref('');
 
 /**
  * Indica si hay algun filtro activo.
@@ -768,6 +833,48 @@ const formatearFecha = (fechaISO) => {
         month: 'short',
         year: 'numeric',
     });
+};
+
+/**
+ * Abre el modal de confirmacion para eliminar un reporte.
+ *
+ * @param {Object} reporte - Reporte a eliminar
+ */
+const confirmarEliminar = (reporte) => {
+    reporteAEliminar.value = reporte;
+    errorEliminar.value = '';
+};
+
+/**
+ * Cierra el modal de confirmacion sin eliminar.
+ */
+const cancelarEliminar = () => {
+    reporteAEliminar.value = null;
+    errorEliminar.value = '';
+};
+
+/**
+ * Ejecuta la eliminacion del reporte en la API.
+ * Tras eliminar, recarga la lista de reportes.
+ */
+const ejecutarEliminar = async () => {
+    eliminando.value = true;
+    errorEliminar.value = '';
+
+    try {
+        await api.delete(`/reportes/${reporteAEliminar.value.id}`);
+        // Cerrar el modal y recargar la lista
+        reporteAEliminar.value = null;
+        await cargarReportes();
+    } catch (error) {
+        if (error.response) {
+            errorEliminar.value = error.response.data.message || 'Error al eliminar el reporte.';
+        } else {
+            errorEliminar.value = 'No se pudo conectar con el servidor.';
+        }
+    } finally {
+        eliminando.value = false;
+    }
 };
 
 /**
